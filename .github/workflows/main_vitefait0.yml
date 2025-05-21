@@ -15,6 +15,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Debug repo contents before install
+        run: |
+          echo "List root directory:"
+          ls -la
+          echo "List backend directory:"
+          ls -la backend
+
       - name: Set up Python version
         uses: actions/setup-python@v5
         with:
@@ -23,19 +30,17 @@ jobs:
       - name: Create virtual environment and install dependencies
         run: |
           python -m venv venv
-          # Use the venv's pip directly to install dependencies
           ./venv/bin/pip install --upgrade pip
           ./venv/bin/pip install -r backend/requirements.txt
 
-      # Optional: Add frontend build step (if applicable)
-      - name: Build frontend (Vite React)
-        working-directory: ./frontend_or_root_if_any
-        run: |
-          npm install
-          npm run build
-        # Adjust working-directory if your frontend is in root or a subfolder
+      # Optional: Build frontend if needed, adjust working-directory and commands as necessary
+      #- name: Build frontend (Vite React)
+      #  working-directory: ./frontend_or_root
+      #  run: |
+      #    npm install
+      #    npm run build
 
-      - name: Zip entire repo for deployment
+      - name: Zip entire repo for deployment, excluding virtual environment
         run: zip -r release.zip . -x "**/venv/**"
 
       - name: Upload artifact for deployment jobs
