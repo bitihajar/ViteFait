@@ -3,6 +3,7 @@ import { FaHeart } from 'react-icons/fa'
 import logo from '../assets/logo4.png' // Import the logo image
 import '../App.css'
 
+
 function Navbar() {
   const isLoggedIn = !!localStorage.getItem('token')
   const navigate = useNavigate()
