@@ -1,7 +1,7 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { FaHeart } from 'react-icons/fa'
 import logo from '../assets/logo4.png' // Import the logo image
-import '../app.css'
+import '../App.css'
 
 function Navbar() {
   const isLoggedIn = !!localStorage.getItem('token')
