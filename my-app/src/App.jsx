@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import './app.css';
+import './App.css';
 import logo from './assets/logo.png';
 
 function App() {
