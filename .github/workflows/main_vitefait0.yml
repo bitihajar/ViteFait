@@ -19,8 +19,8 @@ jobs:
         run: |
           echo "List root directory:"
           ls -la
-          echo "List backend directory:"
-          ls -la backend
+          echo "List my-app/backend directory:"
+          ls -la my-app/backend
 
       - name: Set up Python version
         uses: actions/setup-python@v5
@@ -31,11 +31,11 @@ jobs:
         run: |
           python -m venv venv
           ./venv/bin/pip install --upgrade pip
-          ./venv/bin/pip install -r backend/requirements.txt
+          ./venv/bin/pip install -r my-app/backend/requirements.txt
 
-      # Optional: Build frontend if needed, adjust working-directory and commands as necessary
+      # Optional: Build frontend if needed
       #- name: Build frontend (Vite React)
-      #  working-directory: ./frontend_or_root
+      #  working-directory: ./my-app
       #  run: |
       #    npm install
       #    npm run build
