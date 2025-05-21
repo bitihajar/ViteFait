@@ -30,18 +30,20 @@ jobs:
       - name: Create virtual environment and install dependencies
         run: |
           python -m venv venv
-          ./venv/bin/pip install --upgrade pip
-          ./venv/bin/pip install -r my-app/backend/requirements.txt
+          # Upgrade pip in the venv
+          venv/bin/pip install --upgrade pip
+          # Install dependencies from requirements.txt
+          venv/bin/pip install -r my-app/backend/requirements.txt
 
-      # Optional: Build frontend if needed
-      #- name: Build frontend (Vite React)
-      #  working-directory: ./my-app
-      #  run: |
-      #    npm install
-      #    npm run build
+      # Optional: Build frontend (uncomment if needed)
+      # - name: Build frontend (Vite React)
+      #   working-directory: ./my-app
+      #   run: |
+      #     npm install
+      #     npm run build
 
       - name: Zip entire repo for deployment, excluding virtual environment
-        run: zip -r release.zip . -x "**/venv/**"
+        run: zip -r release.zip . -x "venv/*"
 
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v4
