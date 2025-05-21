@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../../app.css'; // ✅ Correct relative path from src/pages/
+import '../App.css';
+ // ✅ Correct relative path from src/pages/
 
 
 function Signup() {
