@@ -30,3 +30,7 @@ def home():
 
 if __name__ == "__main__":
     app.run(debug=True)
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app, origins=["https://vitefait0-dhfcc2fnc7feg4ae.westeurope-01.azurewebsites.net"])

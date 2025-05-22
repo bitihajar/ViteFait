@@ -12,3 +12,5 @@ export default defineConfig({
 });
 
 
+// src/config.js
+export const API_BASE_URL = "https://vitefait0-dhfcc2fnc7feg4ae.westeurope-01.azurewebsites.net";
