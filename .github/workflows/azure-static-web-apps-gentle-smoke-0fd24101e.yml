@@ -1,4 +1,4 @@
-name: Azure Static Web Apps CI/CD
+name: Azure Full Stack CI/CD
 
 on:
   push:
@@ -10,27 +10,22 @@ on:
       - main
 
 jobs:
-  build_and_deploy_job:
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+  deploy_frontend:
     runs-on: ubuntu-latest
-    name: Build and Deploy Job
-    environment:
-      name: production
+    name: Deploy Frontend
+    environment: production
     steps:
-      - uses: actions/checkout@v4  # Updated to v4
-        with:
-          submodules: recursive
-          fetch-depth: 0
+      - uses: actions/checkout@v4
 
-      - name: Set up Node.js 20
-        uses: actions/setup-node@v4  # Updated to v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
 
       - name: Install frontend dependencies
-        working-directory: ./my-app  # Go to your React/Vite project
-        run: npm ci --prefer-offline
+        working-directory: ./my-app
+        run: npm ci
 
       - name: Build frontend
         working-directory: ./my-app
@@ -39,21 +34,50 @@ jobs:
       - name: Deploy to Azure Static Web Apps
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_GENTLE_SMOKE_0FD24101E }}
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          action: "upload"
-          app_location: "./my-app"   # Path to your React source code
-          output_location: "dist"    # Vite's build output directory
-          app_build_command: "npm run build"
-          api_build_command: ""      # Leave empty for frontend-only
+          app_location: "./my-app"
+          output_location: "dist"
 
-  close_pull_request_job:
+  deploy_backend:
+    runs-on: ubuntu-latest
+    name: Deploy Backend
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'  # Match your Python version
+          cache: 'pip'
+
+      - name: Install backend dependencies
+        working-directory: ./my-app/backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'vitefait0'  # Match your Azure App Service name
+          slot-name: 'production'
+          package: ./my-app/backend
+          startup-command: 'gunicorn --bind=0.0.0.0:8000 app:app'  # Your startup command
+
+  close_pull_request:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
     runs-on: ubuntu-latest
-    name: Close Pull Request Job
+    name: Close Pull Request
     steps:
-      - name: Close Pull Request
+      - name: Close Static Web App PR
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_GENTLE_SMOKE_0FD24101E }}
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           action: "close"
