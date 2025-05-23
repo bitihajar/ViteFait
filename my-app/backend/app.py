@@ -10,7 +10,7 @@ from routes.contact import contact_routes
 
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=["https://gentle-smoke-0fd24101e.6.azurestaticapps.net"])
 
 # MongoDB configuration
 app.config["MONGO_URI"] = "mongodb://localhost:27017/vitefait"
@@ -32,5 +32,4 @@ if __name__ == "__main__":
     app.run(debug=True)
 from flask_cors import CORS
 
-app = Flask(__name__)
-CORS(app, origins=["https://vitefait0-dhfcc2fnc7feg4ae.westeurope-01.azurewebsites.net"])
+
