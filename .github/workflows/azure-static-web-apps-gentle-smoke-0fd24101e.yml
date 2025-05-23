@@ -14,27 +14,38 @@ jobs:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     name: Build and Deploy Job
+    environment:
+      name: production
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4  # Updated to v4
         with:
-          submodules: true
-          lfs: false
+          submodules: recursive
+          fetch-depth: 0
 
-      - name: Set Node.js version to 20
-        uses: actions/setup-node@v3
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4  # Updated to v4
         with:
-          node-version: '20'
+          node-version: 20
+          cache: 'npm'
 
-      - name: Build And Deploy
-        id: builddeploy
+      - name: Install frontend dependencies
+        working-directory: ./my-app  # Go to your React/Vite project
+        run: npm ci --prefer-offline
+
+      - name: Build frontend
+        working-directory: ./my-app
+        run: npm run build
+
+      - name: Deploy to Azure Static Web Apps
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_GENTLE_SMOKE_0FD24101E }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
-          app_location: "./my-app"
-          api_location: ""
-          output_location: "dist" # Vite builds to `dist`, not `build`
+          app_location: "./my-app"   # Path to your React source code
+          output_location: "dist"    # Vite's build output directory
+          app_build_command: "npm run build"
+          api_build_command: ""      # Leave empty for frontend-only
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
@@ -42,7 +53,6 @@ jobs:
     name: Close Pull Request Job
     steps:
       - name: Close Pull Request
-        id: closepullrequest
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_GENTLE_SMOKE_0FD24101E }}
