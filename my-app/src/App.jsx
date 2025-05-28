@@ -231,7 +231,7 @@ function App() {
 
       <div className="promo-section mt-4">
         <div className="promo-header">
-          <h3 className="section-title">🔥 Promotions</h3>
+          <h3 className="section-title">🔥 Nizar</h3>
           <select 
             value={selectedCategory} 
             onChange={(e) => setSelectedCategory(e.target.value)}
