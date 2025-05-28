@@ -231,7 +231,11 @@ function App() {
 
       <div className="promo-section mt-4">
         <div className="promo-header">
+<<<<<<< HEAD
           <h3 className="section-title">🔥 Promotions Nizar</h3>
+=======
+          <h3 className="section-title">🔥 Nizar</h3>
+>>>>>>> 7ff047a08f6f77531da3805d31330c003acd451a
           <select 
             value={selectedCategory} 
             onChange={(e) => setSelectedCategory(e.target.value)}
